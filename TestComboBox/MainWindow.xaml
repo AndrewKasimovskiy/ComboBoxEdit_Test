@@ -4,6 +4,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
     xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+    xmlns:dxei="http://schemas.devexpress.com/winfx/2008/xaml/editors/internal"
+    xmlns:mvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+    xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
     xmlns:local="clr-namespace:TestComboBox"
     Title="MainWindow" Height="800" Width="1000">
 
@@ -11,40 +14,129 @@
         <local:GridViewModel />
     </Window.DataContext>
 
-    <DockPanel>
-        <dxe:ComboBoxEdit VerticalAlignment="Center"
-                          AllowDefaultButton="True"
-                          IsTextEditable="True"
-                          DisplayMember="Text"
+    <dxlc:LayoutControl>
+        <dxlc:LayoutGroup Orientation="Vertical">
+            <dxlc:LayoutItem>
+                <dxe:ComboBoxEdit VerticalAlignment="Center"
+                          AutoComplete="True"
                           FocusPopupOnOpen="False"
                           ImmediatePopup="True"
                           IncrementalSearch="True"
                           IncrementalFiltering="True"
-                          ItemsSource="{Binding Items}"
+                          ValidateOnEnterKeyPressed="False"
                           ValidateOnTextInput="False"
-                          ValueMember="Number">
-            <dxe:ComboBoxEdit.StyleSettings>
-                <dxe:CheckedTokenComboBoxStyleSettings NewTokenPosition="Far" ShowTokenButtons="False" >
-                    <dxe:CheckedTokenComboBoxStyleSettings.TokenBorderTemplate>
-                        <ControlTemplate TargetType="{x:Type ContentControl}">
-                            <Border Visibility="Hidden"/>
-                        </ControlTemplate>
-                    </dxe:CheckedTokenComboBoxStyleSettings.TokenBorderTemplate>
-                </dxe:CheckedTokenComboBoxStyleSettings>
-            </dxe:ComboBoxEdit.StyleSettings>
-            <dxe:ComboBoxEdit.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock>
+                          ItemsSource="{Binding Items}"
+                          Name="comboBox"
+                          ValueMember="Number"
+                          DisplayMember="Text">
+                    <dxe:ComboBoxEdit.StyleSettings>
+                        <dxe:CheckedTokenComboBoxStyleSettings NewTokenPosition="Far" ShowTokenButtons="False" 
+                                                       FilterOutSelectedTokens="False" AllowEditTokens="False">
+                            <dxe:CheckedTokenComboBoxStyleSettings.TokenBorderTemplate>
+                                <ControlTemplate TargetType="{x:Type ContentControl}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Visibility="Hidden" x:Name="border" 
+                                    Margin="1,1,-1,2"
+                                    BorderBrush="DarkGray" CornerRadius="3" />
+                                        <TextBlock Text="," VerticalAlignment="Center" HorizontalAlignment="Center"
+                                           Grid.Column="1" Margin="1,0,-1,0"/>
+                                    </Grid>
+                                    <ControlTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=dxei:TokenEditorPresenter}, Path=IsSelected}" Value="True">
+                                            <Setter TargetName="border" Property="BorderThickness" Value="1"/>
+                                            <Setter TargetName="border" Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </dxe:CheckedTokenComboBoxStyleSettings.TokenBorderTemplate>
+                        </dxe:CheckedTokenComboBoxStyleSettings>
+                    </dxe:ComboBoxEdit.StyleSettings>
+                    <dxe:ComboBoxEdit.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock>
                         <local:TextBlockEx.FormattedText>
                             <MultiBinding Converter="{local:HighlightPartOfTextConverter}">
                                 <Binding Path="Text"/>
                                 <Binding Path="(dxe:BaseEdit.OwnerEdit).DisplayText" RelativeSource="{RelativeSource AncestorType=dxe:ComboBoxEditItem}"/>                                                                
                             </MultiBinding>
                         </local:TextBlockEx.FormattedText>
-                    </TextBlock>
-                </DataTemplate>
-            </dxe:ComboBoxEdit.ItemTemplate>
-        </dxe:ComboBoxEdit>
-
-    </DockPanel>
+                            </TextBlock>
+                        </DataTemplate>
+                    </dxe:ComboBoxEdit.ItemTemplate>
+                    <!--<mvvm:Interaction.Behaviors>
+                        <local:NotifyWrongValueBehavior/>
+                    </mvvm:Interaction.Behaviors>-->
+                </dxe:ComboBoxEdit>
+            </dxlc:LayoutItem>
+            <dxlc:LayoutItem>
+                <dxe:ComboBoxEdit VerticalAlignment="Center"
+                          AutoComplete="True"
+                          FocusPopupOnOpen="False"
+                          ImmediatePopup="True"
+                          IncrementalSearch="True"
+                          IncrementalFiltering="True"
+                          ValidateOnEnterKeyPressed="False"
+                          ValidateOnTextInput="False">
+                    <dxe:ComboBoxEdit.StyleSettings>
+                        <dxe:CheckedTokenComboBoxStyleSettings NewTokenPosition="Far" ShowTokenButtons="False" 
+                                                       FilterOutSelectedTokens="False" AllowEditTokens="False">
+                            <dxe:CheckedTokenComboBoxStyleSettings.TokenBorderTemplate>
+                                <ControlTemplate TargetType="{x:Type ContentControl}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Visibility="Hidden" x:Name="border" 
+                                    Margin="1,1,-1,2"
+                                    BorderBrush="DarkGray" CornerRadius="3" />
+                                        <TextBlock Text="," VerticalAlignment="Center" HorizontalAlignment="Center"
+                                           Grid.Column="1" Margin="1,0,-1,0"/>
+                                    </Grid>
+                                    <ControlTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=dxei:TokenEditorPresenter}, Path=IsSelected}" Value="True">
+                                            <Setter TargetName="border" Property="BorderThickness" Value="1"/>
+                                            <Setter TargetName="border" Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </dxe:CheckedTokenComboBoxStyleSettings.TokenBorderTemplate>
+                        </dxe:CheckedTokenComboBoxStyleSettings>
+                    </dxe:ComboBoxEdit.StyleSettings>
+                    <dxe:ComboBoxEdit.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock>
+                        <local:TextBlockEx.FormattedText>
+                            <MultiBinding Converter="{local:HighlightPartOfTextConverter}">
+                                <Binding Path="Text"/>
+                                <Binding Path="(dxe:BaseEdit.OwnerEdit).DisplayText" RelativeSource="{RelativeSource AncestorType=dxe:ComboBoxEditItem}"/>                                                                
+                            </MultiBinding>
+                        </local:TextBlockEx.FormattedText>
+                            </TextBlock>
+                        </DataTemplate>
+                    </dxe:ComboBoxEdit.ItemTemplate>
+                    <dxe:ComboBoxEdit.Items>
+                        <dxe:ComboBoxEditItem>Text1</dxe:ComboBoxEditItem>
+                        <dxe:ComboBoxEditItem>Text2</dxe:ComboBoxEditItem>
+                        <dxe:ComboBoxEditItem>Text3</dxe:ComboBoxEditItem>
+                        <dxe:ComboBoxEditItem>Text4</dxe:ComboBoxEditItem>
+                        <dxe:ComboBoxEditItem>Text5</dxe:ComboBoxEditItem>
+                        <dxe:ComboBoxEditItem>Text6</dxe:ComboBoxEditItem>
+                        <dxe:ComboBoxEditItem>Text7</dxe:ComboBoxEditItem>
+                        <dxe:ComboBoxEditItem>Text8</dxe:ComboBoxEditItem>
+                        <dxe:ComboBoxEditItem>Text9</dxe:ComboBoxEditItem>
+                        <dxe:ComboBoxEditItem>Text10</dxe:ComboBoxEditItem>
+                        <dxe:ComboBoxEditItem>Text11</dxe:ComboBoxEditItem>
+                    </dxe:ComboBoxEdit.Items>
+                    <mvvm:Interaction.Behaviors>
+                        <local:NotifyWrongValueBehavior/>
+                    </mvvm:Interaction.Behaviors>
+                </dxe:ComboBoxEdit>
+            </dxlc:LayoutItem>
+        </dxlc:LayoutGroup>
+    </dxlc:LayoutControl>
 </dx:ThemedWindow>
